@@ -1,17 +1,30 @@
 import { StyleSheet, Text, View , TextInput , TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import useStyle from '../hooks/useStyle'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
-
-
+import { useRecoilState } from 'recoil';
+import { Backid } from '../data/Recoil/atom';
 
 export default function SsidTyping() {
+  const [Bid , setBid] = useRecoilState(Backid)
   const {  BottomPage  } = useStyle()
   const styles = BottomPage
 
+ 
+
   const navigation = useNavigation()
+
+  const passing = "ROBO_DE%V*L(+E$C@US"
+
+  useEffect(()=>{
+
+    setBid(passing)
+
+  },[])
+
+
 
   return (
     <View  style={styles.MainPage}>
@@ -59,7 +72,7 @@ export default function SsidTyping() {
 
         <View>
 
-<TouchableOpacity onPress={()=> navigation.navigate("Password")} style={styles.ButtonStyle}>
+<TouchableOpacity onPress={()=> navigation.navigate("Password",{passing})} style={styles.ButtonStyle}>
 
   <Text style={styles.ButtonTextstyle}>ENTER</Text>
 
