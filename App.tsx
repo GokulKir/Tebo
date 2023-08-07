@@ -71,8 +71,8 @@ export default function App() {
           },
         
         
-        headerLeft: ()=> null, 
-        headerTitle : (props) => <Header {...props}/> ,
+       
+        headerTitle : (props) => <Header  {...props}/> ,
         headerStyle :{ backgroundColor: '#fff'}}} />
 
       </Stack.Navigator>

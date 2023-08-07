@@ -1,23 +1,59 @@
-import { StyleSheet, Text, View  , TextInput , TouchableOpacity} from 'react-native'
-import React,{useState} from 'react'
+import { StyleSheet, Text, View  , TextInput , TouchableOpacity , Platform , Dimensions} from 'react-native'
+import React,{useState , useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import useStyle from '../hooks/useStyle';
-
+import usePlatform from '../hooks/usePlatform';
+import { useRoute } from '@react-navigation/native';
+import { useRecoilValue } from 'recoil';
+import { Backid } from '../data/Recoil/atom';
 
 export default function PasswordTyping() {
+
     const {  BottomPage  } = useStyle()
+    const backId = useRecoilValue(Backid)
     const styles = BottomPage
+    const { width, height } = Dimensions.get('window');
+    const { isTablet } = usePlatform()
+  
 
     const [secure , setSecure] = useState(false)
+
+    const BackValue = 'ROBO_DE%V*L(+E$C@US'
+    
+    
 
    const Show = () => {
      setSecure(!secure)
    }
 
+   const route = useRoute()
+   
+   const {passing} = route
+
+
+   useEffect(() => {
+    
+   console.log(isTablet);
+   console.log(Platform);
+
+   console.log("This is a backId"+backId);
+
+   if(backId === BackValue) {
+    console.log("ID IS CORRECTED");
+   } 
+
+
+   }, [])
+   
+
 
   return (
+    
+
     <View  style={styles.MainPage}>
+
+ 
 
     <View style={styles.centerBox} >
 
@@ -97,7 +133,9 @@ export default function PasswordTyping() {
 
     </View>
 
+
   </View>
+
   )
 }
 
