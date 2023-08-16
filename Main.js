@@ -9,14 +9,19 @@ import {
   useRecoilState,
   useRecoilValue,
 } from 'recoil';
+import { SocketProvider } from './src/context/SocketContext';
 
 export default function Main() {
   return (
+ 
     <PaperProvider>
-      <RecoilRoot>
-        <App/>
-        </RecoilRoot>
-    </PaperProvider>
+    <RecoilRoot>
+      <SocketProvider>
+        <App />
+      </SocketProvider>
+    </RecoilRoot>
+  </PaperProvider>
+
     
   )
 }
