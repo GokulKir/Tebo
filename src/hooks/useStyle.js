@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import usePlatform from './usePlatform';
 import Ripple from 'react-native-material-ripple';
+import { create } from 'react-test-renderer';
 
 const useStyle = () => {
   const {isTablet} = usePlatform();
@@ -56,6 +57,12 @@ const useStyle = () => {
       borderRadius: 20,
     },
 
+    CetnerIdBoxout : {
+      alignItems:'center' ,
+      marginTop:20
+      
+    },
+
     centerBoxout: {
       width: responsiveWidth(20),
       height: responsiveHeight(5),
@@ -68,6 +75,22 @@ const useStyle = () => {
     },
     CenterInput: {
       alignItems: 'center',
+    },
+
+    CenterCode : {
+
+      alignItems:'center' ,
+      marginTop:30
+
+    },
+    UIDStyle : {
+
+      color:'grey' ,
+      fontStyle:'italic',
+      fontFamily:'Helvetica'
+
+
+
     },
 
     rowcomplete: {
@@ -225,15 +248,32 @@ const useStyle = () => {
       top:-30 ,
       left:5
       
-    }
+    } ,
+
+
+
+
     
+  })
+
+
+  const VideoStyle = StyleSheet.create({
+
+    container : {
+      flex : 1 ,
+      backgroundColor:'#000'
+    }
+
+
+      
   })
 
   return {
     HeaderStyle,
     BottomPage,
     ModalComponent,
-    ApiStyle
+    ApiStyle,
+    VideoStyle
   };
 };
 

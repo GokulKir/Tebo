@@ -7,18 +7,19 @@ import {
   PermissionsAndroid,
   ScrollView,
   NativeEventEmitter,
-  NativeModules ,
-  DeviceEventEmitter ,
+  NativeModules,
+  DeviceEventEmitter,
   Platform
 } from 'react-native';
-import {check, PERMISSIONS, request} from 'react-native-permissions';
-import React, {useEffect, useRef, useState} from 'react';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+
+import React, { useEffect, useRef, useState , useContext } from 'react';
 import useStyle from '../hooks/useStyle';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
-import {useRecoilState} from 'recoil';
-import {Backid, SsidValue, Visible} from '../data/Recoil/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { Backid, SsidValue, Visible } from '../data/Recoil/atom';
 import usePermissions from '../hooks/usePermissions';
 import useWifiManager from '../hooks/useWifi';
 import {
@@ -28,7 +29,7 @@ import {
   PaperProvider,
   Snackbar,
 } from 'react-native-paper';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import Ripple from 'react-native-material-ripple';
@@ -37,19 +38,26 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import BleManager from 'react-native-ble-manager';
-import useBluetooth from '../hooks/useBluetooth';
+// import BleManager from 'react-native-ble-manager';
 import DeviceInfo from 'react-native-device-info';
+// import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
+import Geolocation from 'react-native-geolocation-service';
+import axios from 'axios';
+import { SocketContext } from '../context/SocketContext';
+import { CONFIRMPOPUP } from '../Recoil/recoilState';
 
 
+Geocoder.init('AIzaSyDLg_VU_6t6k3GdnSDUr8_ExrBfKQ3k-2I');
 
 
 export default function SsidTyping() {
+  const [bluetoothDevices, setBluetoothDevices] = useState([]);
   const [Bid, setBid] = useRecoilState(Backid);
   const [visible, setVisible] = useState(false);
-  const {BottomPage} = useStyle();
+  const { BottomPage } = useStyle();
   const styles = BottomPage;
-  const {WifiPermission, requestBluetoothPermissions} = usePermissions();
+  const { WifiPermission, requestBluetoothPermissions } = usePermissions();
   const [selectedSSID, setSelectedSSID] = useState('');
   const pickerRef = useRef(null);
   const [selected, setSelected] = useState(null);
@@ -57,59 +65,58 @@ export default function SsidTyping() {
   const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [show, setShow] = useState(false);
-  const [logData , setLogData] = useState(false);
-  const [deviceName , setDeviceName] = useState(null);
+  const [logData, setLogData] = useState(false);
+  const [deviceName, setDeviceName] = useState(null);
+  const [permissionStatus, setPermissionStatus] = useState(RESULTS.UNAVAILABLE);
+  const [error, setError] = useState(null);
+  const eventEmitterRef = useRef(null); 
+  const confirm = useRecoilValue(CONFIRMPOPUP)
+
+   
+  
+
+  const {sendMessage , Confirm } = useContext(SocketContext)
 
 
+  const deviceInfo = DeviceInfo
 
-  useEffect(() => {
-    BleManager.start({ showAlert: false });
 
-    return () => {
-      BleManager.stopScan();
-    };
-
-  }, []);
-
-  useEffect(()=>{
-    const scanDevices = () => {
-      BleManager.scan([], 5, true).then((results) => {
-        console.log('Scanning...', results);
-      }).catch((err)=>{
-        console.log("Error scanning",err);
-      })
-    };
-
-    scanDevices()
-  },[])
+  // useEffect(()=>{
+  //   console.log("Received++++++++++");
+  //   sendMessage("Hello, world!")
 
  
 
 
-  useEffect(()=>{
-
-    DeviceInfo.getDeviceName().then((deviceName) => {
-        console.log(deviceName);
-        setDeviceName(deviceName);
-
-    });
-
-  },[])
+  // },[])
 
 
 
-//  useEffect(()=>{
+useEffect(()=>{
 
-//   console.log("Bluetooth device",device);
+  console.log("Confirmed++++++++",confirm);
 
-//  },[])
+},[])
 
- 
- //Bluetooth Turn on//
+
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [address, setAddress] = useState('');
+
+  
+
+
 
 
  
- //Bluetooth Turn on//
+
+
+
+
+
+  //Bluetooth Turn on//
+
+
+  //Bluetooth Turn on//
 
 
 
@@ -134,19 +141,9 @@ export default function SsidTyping() {
 
   //Wifi permission//
 
-  useEffect(() => {
-    // Define a function to conditionally call scanWifiNetworks
-    const performScanIfPermissionGranted = async () => {
-      const permissionGranted = await WifiPermission();
-      if (permissionGranted) {
-        scanWifiNetworks();
-      }
-    };
-  
-    // Call the conditional function when the component mounts
-    performScanIfPermissionGranted();
 
-  }, []);
+
+
 
   //Wifi permission//
 
@@ -154,7 +151,7 @@ export default function SsidTyping() {
     setSelectedSSID(itemValue);
   };
 
-  const pickerItems = wifiList.map(({BSSID, SSID}) => (
+  const pickerItems = wifiList.map(({ BSSID, SSID }) => (
     <Picker.Item key={BSSID} label={SSID} value={SSID} />
   ));
 
@@ -172,12 +169,12 @@ export default function SsidTyping() {
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20};
+  const containerStyle = { backgroundColor: 'white', padding: 20 };
 
-  
+
 
   //Wifi Level //
-  const SignalLevel = ({level}) => {
+  const SignalLevel = ({ level }) => {
     if (level >= -30) {
       return <Icon name="signal-wifi-4-bar" size={24} color="green" />;
     } else if (level >= -51) {
@@ -204,47 +201,80 @@ export default function SsidTyping() {
   };
 
 
-
-  //  const WifiPermissionAndroid = async () => {
-
-  //   const granted = await PermissionsAndroid.request(
-  //     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //     {
-  //       title: 'Location permission is required for WiFi connections',
-  //       message:
-  //         'This app needs location permission as this is required  ' +
-  //         'to scan for wifi networks.',
-  //       buttonNegative: 'DENY',
-  //       buttonPositive: 'ALLOW',
-  //     },
-  // );
-  // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //      console.log("Permition granted");
-  //      scanWifiNetworks(); // Now that permission is granted, scan WiFi networks
-
-  // } else {
-  //   console.log("Permition denied");
-  // }
-
-  // }
-
-  //  //Wifi permission//
-  //  useEffect(() => {
-  //   const requestPermissionsAndScan = async () => {
-  //     await WifiPermissionAndroid(); // Request location permission before scanning WiFi networks
-  //   };
-
-  //   requestPermissionsAndScan();
+  // useEffect(() => {
+  //   console.log("Before getSerialNumber");
+  //   DeviceInfo.getSerialNumber()
+  //     .then((serialNumber) => {
+  //       console.log("Serial Number:", serialNumber);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error retrieving serial number:", error);
+  //     });
+  //   console.log("After getSerialNumber");
   // }, []);
-  //  //Wifi permission//
+  
+
+
 
   useEffect(() => {
     console.log('Wifi', wifiList);
 
-    const ssids = wifiList.map(({SSID}) => SSID);
+    const ssids = wifiList.map(({ SSID }) => SSID);
 
     console.log('This ssid', ssids);
   }, []);
+
+
+
+
+  const PassingPage = () => {
+    if (selected === null) {
+      showSnackbar();
+
+      console.log('Not selected');
+    } else {
+      setSelectedWifi(selected);
+      navigation.navigate('Password', { passing });
+    }
+  };
+
+
+
+ 
+
+  useEffect(() => {
+
+    const PermissionWifi = () => {
+
+      WifiPermission().then((permission) => {
+        console.log(permission);
+      })
+    }    
+
+  
+  }, [])
+
+
+
+
+  const SelectionPick = async () => {
+    try {
+      const permissionGranted = await WifiPermission();
+
+      if (permissionGranted) {
+        setVisible(true);
+        console.log("Permission granted");
+        scanWifiNetworks()
+        // Any other logic you want to execute when permission is granted
+      } else {
+        // Handle if permission is not granted
+        console.log('Wi-Fi permission not granted.');
+      }
+    } catch (error) {
+      console.error('Error checking Wi-Fi permission:', error);
+    }
+  };
+
 
   //  useEffect(()=>{
 
@@ -269,6 +299,9 @@ export default function SsidTyping() {
 
   //  },[])
 
+
+
+
   const navigation = useNavigation();
 
   const passing = 'ROBO_DE%V*L(+E$C@US';
@@ -277,26 +310,19 @@ export default function SsidTyping() {
     setBid(passing);
   }, []);
 
-  const PassingPage = () => {
-    if (selected === null) {
-      showSnackbar();
 
-      console.log('Not selected');
-    } else {
-      setSelectedWifi(selected);
-      navigation.navigate('Password', {passing});
-    }
-  };
 
   const ReloadNetwork = () => {
     setVisible(true);
     scanWifiNetworks();
   };
 
+
+
   return (
     <View style={styles.MainPage}>
       <Snackbar
-        style={{backgroundColor: 'red', color: '#fff'}}
+        style={{ backgroundColor: 'red', color: '#fff' }}
         visible={show}
         onDismiss={hideSnackbar}
         action={{
@@ -316,7 +342,7 @@ export default function SsidTyping() {
         <View style={styles.CenterInput}>
           <View style={styles.InputStyle}>
             <Ripple
-              onPress={() => setVisible(true)}
+              onPress={() => SelectionPick()}
               rippleContainerBorderRadius={5}
               style={styles.OrgInput}>
               {selected === null ? (
@@ -327,7 +353,7 @@ export default function SsidTyping() {
             </Ripple>
 
             <View style={styles.IconStyle}>
-              <TouchableOpacity onPress={() => setVisible(true)}>
+              <TouchableOpacity onPress={() => SelectionPick()}>
                 <Icon name="arrow-drop-down" color="grey" size={30} />
               </TouchableOpacity>
             </View>

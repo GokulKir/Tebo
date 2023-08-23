@@ -24,8 +24,20 @@ import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 import apiInstance from '../api/apiInstance';
 import { useNavigation } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
+import { UIDSTORING } from '../Recoil/recoilState';
 
 export default function ApiCheckingpage() {
+
+  //Recoil hook//
+  //Recoil hook//
+
+
+
+  //Recoil state//
+  const [UniqId , setUniqId] = useRecoilState(UIDSTORING)
+  //Recoil state//
+
   
   //Api module//
   const {fetchData, data, isLoading, error} = useApi();
@@ -39,17 +51,22 @@ const navigation = useNavigation()
   const [visible, setVisible] = useState(true);
   const [uid , setUid] = useState(null)
   const [loading , setLoading] = useState(false)
+  const [serialNumber , setSerialNumber] = useState(null)
 
 
+useEffect(()=>{
 
+  DeviceInfo.getUniqueId().then((uniqueId) => {
+      console.log("DeviceInfo.getUniqueId", uniqueId);
 
-
-  useEffect(() => {
-    DeviceInfo.getUniqueId().then((uniqueId) => {
-      console.log("Device Unique Id: " + uniqueId);
-      setUid(uniqueId);
+      setUniqId(uniqueId)
+      setUid(uniqueId)
     });
-  }, []);
+
+},[])
+
+
+
 
   useEffect(() => {
     if (uid) {
@@ -63,7 +80,9 @@ const navigation = useNavigation()
         setLoading(true); // Set loading to true before the API call
         try {
           const response = await apiInstance.post('/api/v1/robot-uuid', postData);
+          
           console.log('Success:', response.data);
+           setUniqId(response.data)
            setTimeout(() => {
 
             navigation.navigate("UID")

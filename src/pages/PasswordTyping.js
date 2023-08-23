@@ -33,13 +33,18 @@ import {
 } from 'react-native-paper';
 import Ripple from 'react-native-material-ripple';
 import DeviceInfo from 'react-native-device-info';
-import BleManager from 'react-native-ble-plx';
+// import BleManager from 'react-native-ble-plx';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import useApi from '../hooks/useApi';
-
-
+import { BleManager } from 'react-native-ble-plx';
 
 export default function PasswordTyping() {
+
+  //IMEI state//
+  //IMEI state//
+
+
+  
   //Navigation veriable//
   const navigation = useNavigation();
   //Navigation veriable//
@@ -87,6 +92,35 @@ export default function PasswordTyping() {
 
 
 
+  // useEffect(() => {
+  //   const bleManager = new BleManager();
+
+  //   // Start scanning for devices
+  //   bleManager.startDeviceScan(null, null, (error, scannedDevice) => {
+  //     if (error) {
+  //       console.error('Error scanning:', error);
+  //       return;
+  //     }
+      
+  //     // Extract device name and ID from scannedDevice
+  //     const { name, id } = scannedDevice;
+
+  //     // Add the device info to the devices array
+  //     setDevices(prevDevices => {
+  //       const existingDeviceIndex = prevDevices.findIndex(device => device.id === id);
+  //       if (existingDeviceIndex !== -1) {
+  //         prevDevices[existingDeviceIndex] = { id, name };
+  //         return [...prevDevices];
+  //       }
+  //       return [...prevDevices, { id, name }];
+  //     });
+  //   });
+
+  //   // Stop scanning when the component unmounts
+  //   return () => {
+  //     bleManager.stopDeviceScan();
+  //   };
+  // }, []);
 
 
 
@@ -146,21 +180,26 @@ export default function PasswordTyping() {
   //     }
   //   };
 
-  useEffect(() => {
-    if (isBluetoothEnabled == true) {
-      console.log('Nully connected');
-      const connectToDevice = device => {
-        console.log('Connect');
-        BleManager.connect(device.id)
-          .then(() => {
-            console.log('Connected to device:', device.name);
-          })
-          .catch(error => {
-            console.error('Failed to connect to device', error);
-          });
-      };
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isBluetoothEnabled == true) {
+  //     console.log('Nully connected');
+  //     const connectToDevice = device => {
+  //       console.log('Connect');
+  //       // BleManager.connect(device.id)
+  //       //   .then(() => {
+  //       //     console.log('Connected to device:', device.name);
+  //       //   })
+  //       //   .catch(error => {
+  //       //     console.error('Failed to connect to device', error);
+  //       //   });
+  //     };
+  //   }
+  // }, []);
+
+
+ 
+
+  
 
   const connectWifi = async () => {
     console.log('SSSSSSIIIDDD', ssid, 'PPPPAAAAASS', password);
@@ -179,7 +218,7 @@ export default function PasswordTyping() {
         );
         if (isConnected) {
           console.log(`Connected to WiFi network: ${ssid}`);
-          navigation.navigate('ApiCheck');
+          navigation.replace('ApiCheck');
           setConnectionTrue(true);
         } else {
           console.log(`Failed to connect to WiFi network: ${ssid}`);

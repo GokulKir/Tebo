@@ -5,28 +5,18 @@ package="com.tebo"
 
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 <uses-permission android:name="android.permission.BLUETOOTH" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"  />
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT_ADMIN" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.CALL_PHONE" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 <uses-feature android:name="android.hardware.camera" />
-<uses-feature android:name="android.hardware.camera.autofocus" />
-<uses-feature android:name="android.hardware.audio.output" />
 <uses-feature android:name="android.hardware.microphone" />
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 
 
@@ -52,8 +42,11 @@ package="com.tebo"
         </intent-filter>
       </activity>
     </application>
-
+<uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="false" />
+        <meta-data
+    android:name="com.google.android.maps.geo.API_KEY"
+    android:value="AIzaSyDLg_VU_6t6k3GdnSDUr8_ExrBfKQ3k-2I"/>
 </manifest>
