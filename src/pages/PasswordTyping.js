@@ -218,7 +218,7 @@ export default function PasswordTyping() {
         );
         if (isConnected) {
           console.log(`Connected to WiFi network: ${ssid}`);
-          navigation.replace('ApiCheck');
+          navigation.replace('BleList');
           setConnectionTrue(true);
         } else {
           console.log(`Failed to connect to WiFi network: ${ssid}`);

@@ -75,15 +75,15 @@ export default function UniqidTyping() {
 
 
 
-useEffect(()=>{
+// useEffect(()=>{
 
-  setTimeout(()=>{
+//   setTimeout(()=>{
 
-    navigation.navigate('Stream')
+//     navigation.navigate('Stream')
 
-  },2000)
+//   },2000)
 
-},[])
+// },[])
 
 
 

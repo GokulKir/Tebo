@@ -31,6 +31,11 @@ import Header from './src/components/Header';
 import VideoStream from './src/pages/VideoStream';
 //Video Stram page//
 
+//Bluetooth List page//
+import BluetoothList from './src/pages/BluetoothList';
+//Bluetooth List page//
+
+
 //Asyncstorage module//
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //Asyncstorage module//
@@ -173,6 +178,29 @@ export default function App() {
 <Stack.Screen
           name="Stream"
           component={VideoStream}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            transitionSpec: {
+              open: {
+                animation: 'timing',
+                config: {
+                  duration: 500,
+                },
+              },
+              close: {
+                animation: 'timing',
+                config: {
+                  duration: 500,
+                },
+              },
+            },
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen
+          name="BleList"
+          component={BluetoothList}
           options={{
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             transitionSpec: {
