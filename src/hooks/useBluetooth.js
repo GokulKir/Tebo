@@ -1,54 +1,43 @@
-import { useState, useEffect } from 'react';
-// import { BleManager } from 'react-native-ble-plx';
+import { useEffect, useState } from 'react';
+import BluetoothClassic from 'react-native-bluetooth-classic';
 
-const useBluetooth = (deviceName) => {
-  const [device, setDevice] = useState(null);
-  const [error, setError] = useState(null);
-  const bleManager = new BleManager();
+const useBluetooth = () => {
+  const [connectedDevices, setConnectedDevices] = useState([]);
 
   useEffect(() => {
-    const scanAndConnect = async () => {
-      try {
-        // Start scanning for nearby BLE devices
-        // const subscription = bleManager.onStateChange((state) => {
-        //   if (state === 'PoweredOn') {
-        //     bleManager.startDeviceScan(null, null, (error, scannedDevice) => {
-        //       if (error) {
-        //         setError(error.message);
-        //         return;
-        //       }
+    getConnectedDevices();
+  }, []);
 
-        //       // Filter devices by name or other criteria if needed
-        //       if (scannedDevice.name === deviceName) {
-        //         bleManager.stopDeviceScan(); // Stop scanning
+  const getConnectedDevices = async () => {
+    try {
+      const devices = await BluetoothClassic.getBondedDevices();
+      setConnectedDevices(devices);
+    } catch (error) {
+      console.error('Error getting connected devices:', error);
+    }
+  };
 
-        //         // Connect to the selected device
-        //         scannedDevice.connect()
-        //           .then((connectedDevice) => {
-        //             setDevice(connectedDevice);
-        //           })
-        //           .catch((error) => {
-        //             setError(error.message);
-        //           });
-        //       }
-        //     });
-        //   }
-        // }, true);
-
-        // // Clean up subscription and manager when component unmounts
-        // return () => {
-        //   subscription.remove();
-        //   bleManager.destroy();
-        // };
-      } catch (error) {
-        setError(error.message);
+  const sendDataToDevice = async (data) => {
+    try {
+      if (connectedDevices.length === 0) {
+        console.log('No connected devices found.');
+        return;
       }
-    };
 
-    scanAndConnect();
-  }, [deviceName]);
+      const device = connectedDevices[0]; // Assuming you want to send to the first connected device
+      const result = await BluetoothClassic.writeToDevice(device, data);
 
-  return { device, error };
+      if (result) {
+        console.log('Data sent successfully.');
+      } else {
+        console.log('Failed to send data.');
+      }
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+  };
+
+  return { connectedDevices, getConnectedDevices, sendDataToDevice };
 };
 
 export default useBluetooth;

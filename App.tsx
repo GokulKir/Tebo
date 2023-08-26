@@ -55,6 +55,29 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+
+      <Stack.Screen
+          name="BleList"
+          component={BluetoothList}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
+            transitionSpec: {
+              open: {
+                animation: 'timing',
+                config: {
+                  duration: 900,
+                },
+              },
+              close: {
+                animation: 'timing',
+                config: {
+                  duration: 800,
+                },
+              },
+            },
+            headerShown: false,
+          }}
+        />
         {/* <Stack.Screen 
        name="CHECKING" 
        component={ConnectionChecking} 
@@ -198,28 +221,7 @@ export default function App() {
           }}
         />
 
-<Stack.Screen
-          name="BleList"
-          component={BluetoothList}
-          options={{
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-            transitionSpec: {
-              open: {
-                animation: 'timing',
-                config: {
-                  duration: 500,
-                },
-              },
-              close: {
-                animation: 'timing',
-                config: {
-                  duration: 500,
-                },
-              },
-            },
-            headerShown: false,
-          }}
-        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

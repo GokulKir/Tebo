@@ -114,8 +114,10 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation 'com.facebook.react:react-native:+'
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-wifi-reborn')
+    implementation project(':react-native-bluetooth-classic')
     implementation project(':react-native-vector-icons')
     implementation project(':sp-react-native-mqtt')
      implementation 'com.google.android.gms:play-services-base:18.0.1'
