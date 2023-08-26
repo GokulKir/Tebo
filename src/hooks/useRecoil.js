@@ -4,12 +4,19 @@ import { atom } from "recoil"
 const useRecoil = () => {
 
     const Backid = atom({
-        key : "Backid",
+        key: "Backid",
+        default: null
+    }) 
+
+    const UIDSTORING = atom({
+        key : "UIDSTORING",
         default : null
     })
 
+
     return {
-        Backid
+        Backid ,
+        UIDSTORING
     }
 
 }
