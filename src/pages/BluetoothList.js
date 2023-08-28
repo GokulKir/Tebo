@@ -2,8 +2,7 @@
 // import React, { useEffect, useState } from 'react'
 // import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 // import Icon from 'react-native-vector-icons/MaterialIcons';
-// import useBluetooth from '../hooks/useBluetooth';
-// import BleManager from 'react-native-ble-manager';
+// import { BleManager } from 'react-native-ble-plx';
 
 // export default function BluetoothList() {
 //   const [scanning, setScanning] = useState(false);
@@ -12,71 +11,23 @@
 
 
 
-// const { connectedDevices, getConnectedDevices, sendDataToDevice } = useBluetooth()
-
-
-
+//   const manager = new BleManager();
 
 
 //   useEffect(() => {
-//     // Function to scan for BLE devices
-//     const scanForDevices = () => {
-//       BleManager.scan([], 5, true) // Scans for 5 seconds, auto-connects to devices
-//         .then(results => {
-//           const scannedDevices = results.map(device => ({
-//             id: device.id,
-//             name: device.name || 'Unknown Device',
-//           }));
-//           setDevices(scannedDevices);
-//         })
-//         .catch(error => {
-//           console.error('Scan error:', error);
+//         manager.onStateChange((state) => {
+//           const subscription = manager.onStateChange(async (state) => {
+//             console.log(state);
+//             const newLogData = logData;
+//             newLogData.push(state);
+//             await setLogCount(newLogData.length);
+//             await setLogData(newLogData);
+//             subscription.remove();
+//           }, true);
+//           return () => subscription.remove();
 //         });
-//     };
-
-//     // Start scanning for devices when the component mounts
-//     scanForDevices();
-
-//     // Clean up resources when the component unmounts
-//     return () => {
-//       BleManager.stopScan();
-//       if (connectedDevice) {
-//         BleManager.disconnect(connectedDevice.id)
-//           .then(() => {
-//             console.log('Disconnected from connected device');
-//           })
-//           .catch(error => {
-//             console.error('Disconnection error:', error);
-//           });
-//       }
-//     };
-//   }, []);
-
-//   const connectToDevice = (device) => {
-//     BleManager.connect(device.id)
-//       .then(() => {
-//         console.log('Connected to device:', device.name);
-//         setConnectedDevice(device);
-//       })
-//       .catch(error => {
-//         console.error('Connection error:', error);
-//       });
-//   };
-
-//   const disconnectFromDevice = () => {
-//     if (connectedDevice) {
-//       BleManager.disconnect(connectedDevice.id)
-//         .then(() => {
-//           console.log('Disconnected from device:', connectedDevice.name);
-//           setConnectedDevice(null);
-//         })
-//         .catch(error => {
-//           console.error('Disconnection error:', error);
-//         });
-//     }
-//   };
-
-
+//       }, [manager]);
+  
 
 
 
@@ -272,6 +223,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, PermissionsAndroid } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
+import {request , PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 export const manager = new BleManager();
 
@@ -297,6 +249,25 @@ const BluetoothScanner = () => {
   const [logCount, setLogCount] = useState(0);
   const [scannedDevices, setScannedDevices] = useState({});
   const [deviceCount, setDeviceCount] = useState(0);
+  const [devices, setDevices] = useState([]);
+
+
+  
+  const startScan = async () => {
+    const bleManager = new BleManager();
+    bleManager.startDeviceScan(null, null, (error, scannedDevice) => {
+      if (error) {
+        console.error('Error scanning:', error);
+        return;
+      }
+      if (scannedDevice) {
+        setDevices(prevDevices => [...prevDevices, scannedDevice]);
+      }
+    });
+  };
+
+
+
 
   useEffect(() => {
     manager.onStateChange((state) => {
