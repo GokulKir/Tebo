@@ -118,6 +118,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-wifi-reborn')
     implementation project(':react-native-bluetooth-classic')
+    implementation project(':react-native-sqlite-storage')
     implementation project(':react-native-vector-icons')
     implementation project(':sp-react-native-mqtt')
      implementation 'com.google.android.gms:play-services-base:18.0.1'

@@ -8,3 +8,5 @@ project(':react-native-vector-icons').projectDir = new File(rootProject.projectD
 includeBuild('../node_modules/@react-native/gradle-plugin')
 include ':sp-react-native-mqtt'
 project(':sp-react-native-mqtt').projectDir = new File(rootProject.projectDir,  '../node_modules/sp-react-native-mqtt/android')
+include ':react-native-sqlite-storage'
+project(':react-native-sqlite-storage').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sqlite-storage/platforms/android') 
